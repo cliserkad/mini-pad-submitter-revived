@@ -12,7 +12,7 @@
  *
  * Created with: JetBrains IntelliJ IDEA IDE http://www.jetbrains.com/idea/
  *
- * Version: 2.4
+ * Version: 2.5
  */
 package com.mindprod.http;
 
