@@ -12,7 +12,7 @@
  *
  * Created with: JetBrains IntelliJ IDEA IDE http://www.jetbrains.com/idea/
  *
- * Version: 19.9
+ * Version: 20.0
  */
 package com.mindprod.submitter;
 
