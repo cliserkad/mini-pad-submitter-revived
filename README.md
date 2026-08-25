@@ -51,7 +51,7 @@ Three separate bugs, all versions of the same root cause: **this code was writte
 
 With those three changes, the tool can fetch and validate a PAD file hosted on any normal modern HTTPS site again.
 
-`dist/submitter-patched.jar` is the rebuilt, runnable jar (`java -jar submitter-patched.jar`). `src/` has the patched files in full plus `Get.java` unchanged (included because `Submitter` depends on it) — for anyone who wants to rebuild from scratch you'll also need the rest of Roedy Green's `com.mindprod` packages (`common18`, `entities`, `fastcat`, etc.) on the classpath, available from his original distribution.
+`dist/submitter-patched.jar` is the rebuilt, runnable jar (`java -jar submitter-patched.jar`). `src/` has the patched files in full plus `Get.java`, which carries no functional changes (it's included because `Submitter` depends on it) — for anyone who wants to rebuild from scratch you'll also need the rest of Roedy Green's `com.mindprod` packages (`common18`, `entities`, `fastcat`, etc.) on the classpath, available from his original distribution.
 
 ## What this doesn't fix
 
@@ -102,6 +102,22 @@ java -jar submitter-rebuilt.jar
 ```
 
 This extracts the existing jar's classes into `build/`, recompiles the patched files on top of it (overwriting just those `.class` files), and repackages everything into a fresh runnable jar. `sites.txt` needs to sit next to whichever jar you actually run. Tested end to end on a clean directory before writing this down.
+
+## Where the git history came from
+
+The commit log goes back to 1998. Roedy never used git for this project — he kept a changelog by hand at the top of each source file, one line per change with a version number, a date, and a note about what he added or removed.
+
+[cliserkad](https://github.com/cliserkad) turned those comment lines into commits ([#1](https://github.com/lexvalo/mini-pad-submitter-revived/pull/1)), one per changelog entry, each with its original date and message. The commits are authored as Roedy Green, since the dates and the wording are his; the committer field records cliserkad, who did the reconstruction. The changelog blocks are gone from the file headers now, replaced by a single `Version:` line that moves through the history to match.
+
+The granularity is his changelog's — one commit per release note, not per actual change. Plain `git log` also shows the dates jumping around, since the reconstructed commits sit on top of the 2026 ones. Sorting by author date puts it in order:
+
+```sh
+git log --pretty=format:"%ad %h by %an, %s" --date=iso | sort
+```
+
+It also makes for a good [Gource](https://gource.io/) run, with `--author-time`.
+
+A real history may still exist somewhere — Roedy's site has an SVN link on it, though a straight `git svn clone` against that URL didn't get anywhere.
 
 ## About the original author
 
