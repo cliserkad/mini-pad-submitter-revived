@@ -12,12 +12,7 @@
  *
  * Created with: JetBrains IntelliJ IDEA IDE http://www.jetbrains.com/idea/
  *
- * Version History:
- *  2.0 2009-02-20 major refactoring. separate setParms and setPostParms. new send method. Post can have both types
- *                 of parm.
- *  2.1 2010-02-07 new methods Post.setBody Http.setRequestProperties.
- *  2.2 2010-04-05 new method getURL
- *  2.3 2010-11-14 new method setInstanceFollowRedirects
+ * Version: 2.3
  */
 package com.mindprod.http;
 
