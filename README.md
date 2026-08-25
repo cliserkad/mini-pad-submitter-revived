@@ -17,6 +17,7 @@ This repository restores compatibility with today's web while preserving the ori
 - **2017** — Last version 26.3 becomes the final official release.
 - **2023** — Roedy Green passes away.
 - **2026** — This community compatibility update is published.
+- **2026** — Roedy's hand-written changelog is [reconstructed into git history](#where-the-git-history-came-from), going back to 1998.
 
 ---
 
