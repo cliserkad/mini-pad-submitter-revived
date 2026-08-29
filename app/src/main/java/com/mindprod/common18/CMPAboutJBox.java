@@ -431,7 +431,7 @@ public final class CMPAboutJBox extends JDialog
     /**
      * layout the components
      *
-     * @param contentPane pane of the surrounding JApplet or JFrame.
+     * @param contentPane pane of the surrounding JFrame.
      */
     private void layoutComponents( final Container contentPane )
         {

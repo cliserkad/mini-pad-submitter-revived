@@ -206,7 +206,7 @@ public final class Laf
             }
         catch ( ClassCastException e )
             {
-            // was an JApplet or AppletViewer as the outer frame. Does not have a bar to decorate.
+            // outer frame was not a JFrame. Does not have a bar to decorate.
             }
         }
 

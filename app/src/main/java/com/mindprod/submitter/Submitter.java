@@ -1,7 +1,7 @@
 /*
  * [Submitter.java]
  *
- * Summary: Applet GUI to submit PAD files to various distribution websites.
+ * Summary: GUI to submit PAD files to various distribution websites.
  *
  * Copyright: (c) 2007-2017 Roedy Green, Canadian Mind Products, http://mindprod.com
  *
@@ -19,17 +19,14 @@ package com.mindprod.submitter;
 import com.mindprod.common18.Build;
 import com.mindprod.common18.CMPAboutJBox;
 import com.mindprod.common18.FontFactory;
-import com.mindprod.common18.HybridJ;
 import com.mindprod.common18.JEButton;
 import com.mindprod.common18.Laf;
-import com.mindprod.common18.Misc;
 import com.mindprod.common18.ST;
-import com.mindprod.common18.VersionCheck;
 import com.mindprod.entities.DeEntifyStrings;
 import com.mindprod.http.Get;
 
-import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -60,29 +57,23 @@ import java.util.prefs.Preferences;
 import static java.lang.System.*;
 
 /**
- * Applet GUI to submit PAD files to various distribution websites.
+ * GUI to submit PAD files to various distribution websites.
  *
  * @author Roedy Green, Canadian Mind Products
  * @version 26.3 2017-03-30 drop http://paulspicks.com/
  * @since 2007
  */
 @SuppressWarnings( { "FieldCanBeLocal" } )
-public final class Submitter extends JApplet implements Runnable
+public final class Submitter extends JFrame implements Runnable
     {
     /**
      * allow user to resusbumit the same url within a week.  Normally false. True during debugging.
      */
     private static final boolean PERMIT_RESUBMIT = false;
 
-    /**
-     * Applet height in pixels
-     */
-    private static final int APPLET_HEIGHT = 500;
+    private static final int WINDOW_HEIGHT = 500;
 
-    /**
-     * Applet width in pixels
-     */
-    private static final int APPLET_WIDTH = 680;
+    private static final int WINDOW_WIDTH = 680;
 
     private static final int FIRST_COPYRIGHT_YEAR = 2007;
 
@@ -126,9 +117,6 @@ public final class Submitter extends JApplet implements Runnable
      */
     private static final String SAMPLE_WEBSITE_URL = "http://mypretendwebsite.com/pad";
 
-    /**
-     * title of Applet
-     */
     private static final String TITLE_STRING = "Mini PAD Submitter";
 
     /**
@@ -208,12 +196,7 @@ public final class Submitter extends JApplet implements Runnable
     private static final Font FONT_FOR_URLS = FontFactory.build( "Dialog", Font.PLAIN, 14 );
 
     /**
-     * true if running as Applet, false if as application
-     */
-    private final boolean inApplet;
-
-    /**
-     * contentPane of the JApplet
+     * contentPane of the JFrame
      */
     private Container contentPane;
 
@@ -299,21 +282,13 @@ public final class Submitter extends JApplet implements Runnable
     private boolean usingAlt;
 
     /**
-     * default constructor for Applet use.
-     */
-    public Submitter()
-        {
-        inApplet = true;
-        }
-
-    /**
-     * Alternate constructor for standalone use.
+     * Constructor.
      *
      * @param logDir directory to dump the log, null if suppress log.
      */
-    private Submitter( String logDir )
+    public Submitter( String logDir )
         {
-        inApplet = false;
+        super( TITLE_STRING + " " + VERSION_STRING );
         if ( logDir == null
              || logDir.length() == 0
              || logDir.equals( "null" )
@@ -323,6 +298,17 @@ public final class Submitter extends JApplet implements Runnable
             logDir = null;
             }
         this.logDir = logDir;
+        contentPane = getContentPane();
+        userPrefs = Preferences.userNodeForPackage( Submitter.class );
+        usingAlt = false;
+        buildMenu();
+        buildComponents();
+        layoutComponents();
+        hookListeners();
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        setSize( WINDOW_WIDTH, WINDOW_HEIGHT );
+        this.validate();
+        this.setVisible( true );
         }
 
     /**
@@ -409,7 +395,7 @@ public final class Submitter extends JApplet implements Runnable
         instructions.setEditable( false );
         instructions.setMargin( new Insets( 2, 2, 2, 2 ) );
         instructions2 = new JLabel(
-                "Don\u2019t scroll away from or minimise this Applet when it is actively submitting." );
+                "Don\u2019t scroll away from or minimise this application when it is actively submitting." );
         instructions2.setFont( FONT_FOR_INSTRUCTIONS );
         instructions2.setForeground( FOREGROUND_FOR_INSTRUCTIONS );
         instructions2.setBackground( BACKGROUND_FOR_INSTRUCTIONS );
@@ -461,7 +447,7 @@ public final class Submitter extends JApplet implements Runnable
             public void actionPerformed( ActionEvent e )
                 {
                 // open about frame
-                new CMPAboutJBox( Misc.getParentFrame( Submitter.this ),
+                new CMPAboutJBox( Submitter.this,
                         TITLE_STRING,
                         VERSION_STRING,
                         "Submits an ASP PAD XML program description to "
@@ -921,83 +907,13 @@ public final class Submitter extends JApplet implements Runnable
         }
 
     /**
-     * Allow this Applet to run as as application as well.
-     *
      * @param args optional parm, directory to put logs.
      */
     public static void main( String args[] )
         {
         final String logDir = ( args.length >= 1 ) ? args[ 0 ] : null;
-        HybridJ.fireup( new Submitter( logDir ),
-                TITLE_STRING + " " + VERSION_STRING,
-                APPLET_WIDTH,
-                APPLET_HEIGHT );
+        SwingUtilities.invokeLater( () -> new Submitter( logDir ) );
         } // end main
-
-    /**
-     * Called by the browser or Applet viewer to inform
-     * this Applet that it is being reclaimed and that it should destroy
-     * any resources that it has allocated.
-     */
-    @Override
-    public void destroy()
-        {
-        contentPane = null;
-        fullPADURLString = null;
-        // htmlDocument = null;
-        instructions = null;
-        instructions2 = null;
-        logDir = null;
-        padFile = null;
-        padFileLabel = null;
-        response = null;
-        responsePage = null;
-        scroller = null;
-        submitButton = null;
-        title2 = null;
-        title = null;
-        userPrefs = null;
-        websiteURL = null;
-        websiteURLLabel = null;
-        }
-
-    /**
-     * Called by the browser or Applet viewer to inform
-     * this Applet that it has been loaded into the system.
-     */
-    @Override
-    public void init()
-        {
-        if ( inApplet )
-            {
-            //  use param only when run in a browser.
-            logDir = this.getParameter( "logDir" );
-            if ( logDir == null
-                 || logDir.length() == 0
-                 || logDir.equals( "null" )
-                 || logDir.equals( "default" )
-                 || logDir.equalsIgnoreCase( "noLog" ) )
-                {
-                logDir = null;
-                }
-            }
-        if ( !VersionCheck.isJavaVersionOK( 1, 7, 0, contentPane ) )
-            {
-            // abort
-            stop();
-            destroy();
-            }
-        //  Common17.setLaf();
-        contentPane = getContentPane();
-        userPrefs = Preferences.userNodeForPackage( Submitter.class );
-        usingAlt = false;
-        buildMenu(); // also initial L&F
-        buildComponents();
-        layoutComponents();
-        hookListeners();
-        this.validate();
-        this.setVisible( true );
-        }
 
     /**
      * separate thread to handle submit loop

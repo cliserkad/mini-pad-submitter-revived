@@ -84,7 +84,7 @@ public final class CheckPermission
      *                       new PropertyPermission( "user.language", "read,write")
      *                       new PropertyPermission( ""swing.aatext", "write")  to set LAF
      *                       new SocketPermission("www.sun.com", "connect");
-     * @param container      container to add an error message component, usually this Applet or JApplet.
+     * @param container      container to add an error message component, usually the main application frame.
      *
      * @return true if we have permission
      */

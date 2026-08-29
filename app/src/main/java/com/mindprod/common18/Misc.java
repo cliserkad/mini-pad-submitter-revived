@@ -274,12 +274,10 @@ public final class Misc
         }// /method
 
     /**
-     * find Frame/JFrame enclosing a Component/Container/Dialog/Applet... Returns null if can't find one.
-     * Useful when you need to pass the enclosing Frame to to a JDialog constructor.
+     * find Frame/JFrame enclosing a Component/Container/Dialog. Returns null if can't find one.
+     * Useful when you need to pass the enclosing Frame to a JDialog constructor.
      *
-     * @return Frame, will be typically not be a literal Frame, but a
-     * javax.swing.JFrame, sun.applet.AppletViewer, class sun.plugin2.main.client.PluginEmbeddedFrame (For
-     * JApplet)
+     * @return Frame, will typically be a javax.swing.JFrame
      */
     public static Frame getParentFrame( Component child )
         {
