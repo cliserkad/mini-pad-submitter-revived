@@ -20,13 +20,13 @@ import com.mindprod.common18.Build;
 import com.mindprod.common18.CMPAboutJBox;
 import com.mindprod.common18.FontFactory;
 import com.mindprod.common18.JEButton;
-import com.mindprod.common18.Laf;
 import com.mindprod.common18.ST;
 import com.mindprod.entities.DeEntifyStrings;
 import com.mindprod.http.Get;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -298,6 +298,13 @@ public final class Submitter extends JFrame implements Runnable
             logDir = null;
             }
         this.logDir = logDir;
+        try
+            {
+            UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+            }
+        catch ( Exception ignored )
+            {
+            }
         contentPane = getContentPane();
         userPrefs = Preferences.userNodeForPackage( Submitter.class );
         usingAlt = false;
@@ -424,20 +431,10 @@ public final class Submitter extends JFrame implements Runnable
         response.setMargin( new Insets( 2, 2, 2, 2 ) );
         }
 
-    /**
-     * build a menu with Look & Feel and About across the top
-     */
     private void buildMenu()
         {
-        // turn on anti-alias
-        System.setProperty( "swing.aatext", "true" );
         final JMenuBar menubar = new JMenuBar();
         setJMenuBar( menubar );
-        final JMenu lafMenu = Laf.buildLookAndFeelMenu();
-        if ( lafMenu != null )
-            {
-            menubar.add( lafMenu );
-            }
         final JMenu menuHelp = new JMenu( "Help" );
         menubar.add( menuHelp );
         final JMenuItem aboutItem = new JMenuItem( "About" );

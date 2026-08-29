@@ -46,7 +46,6 @@ public final class HybridJ
                                final int applicationHeight )
         {
         SwingUtilities.invokeLater( () -> {
-            JFrame.setDefaultLookAndFeelDecorated( true );
             frame.setResizable( true );
             frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
             frame.setSize( applicationWidth, applicationHeight );
