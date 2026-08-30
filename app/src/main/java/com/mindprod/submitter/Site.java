@@ -137,7 +137,7 @@ final class Site
         if ( file == null )
             {
             throw new IllegalStateException(
-                    "Could not find sites.txt next to submitter-patched.jar or in the current directory." );
+                    "Could not find sites.txt next to running .jar or in the current directory." );
             }
         final List<Site> sites = new ArrayList<>();
         try ( BufferedReader reader = new BufferedReader( new FileReader( file ) ) )
