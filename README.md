@@ -76,35 +76,26 @@ It's now loaded at runtime from [`dist/sites.txt`](dist/sites.txt), a plain text
 
 ## How to use it
 
-1. Install a Java runtime (JRE/JDK 8 or later) if you don't already have one.
-2. Download both [`dist/submitter-patched.jar`](dist/submitter-patched.jar) and [`dist/sites.txt`](dist/sites.txt) into the same folder — the jar looks for `sites.txt` next to itself at startup.
-3. Run it: `java -jar submitter-patched.jar`. A GUI window opens ("Mini PAD Submitter 26.3 Revived").
+1. Install a Java runtime (JRE/JDK 21 or later)
+2. Download `mini-pad-submitter.jar` from the latest `Gradle Build` Actions run and [`dist/sites.txt`](dist/sites.txt) into the same folder
+3. Run it: `java -jar mini-pad-submitter.jar`. A GUI window opens ("Mini PAD Submitter 26.3 Revived").
 4. Fill in two fields:
    - **Web Dir URL** — the folder your PAD file lives in, e.g. `https://yoursite.com` (no trailing filename).
    - **PAD xml file** — just the filename, e.g. `yoursite-pad.xml` (no `http://`, no `/`, no domain — the tool joins the two fields itself).
 5. Click **Submit**. It'll try every site listed in `sites.txt` and report which ones accepted it.
 
-`src/` and `patches/` aren't needed to use the tool — they're there for anyone who wants to see exactly what changed or rebuild it themselves. See [What was actually wrong](#what-was-actually-wrong) above.
+`sites.txt` needs to sit next to whichever jar you actually run.
 
 ## Building from source
 
-You'll need a JDK (8 or later). `Submitter` also depends on the rest of Roedy Green's `com.mindprod` packages (`common18`, `entities`, `fastcat`), which aren't duplicated in this repo — the easiest way to get them is to reuse the already-compiled classes bundled in `dist/submitter-patched.jar`.
+You'll need a JDK version 21 or later.
 
 From the repo root:
 
 ```sh
-mkdir build
-cd build && jar xf ../dist/submitter-patched.jar && cd ..
-
-javac -cp build -d build src/com/mindprod/http/Http.java src/com/mindprod/http/Get.java src/com/mindprod/submitter/Site.java src/com/mindprod/submitter/Submitter.java
-
-jar cfe submitter-rebuilt.jar com.mindprod.submitter.Submitter -C build .
-cp dist/sites.txt .
-
-java -jar submitter-rebuilt.jar
+./gradlew build
+java -jar app/build/libs/app.jar
 ```
-
-This extracts the existing jar's classes into `build/`, recompiles the patched files on top of it (overwriting just those `.class` files), and repackages everything into a fresh runnable jar. `sites.txt` needs to sit next to whichever jar you actually run. Tested end to end on a clean directory before writing this down.
 
 ## Where the git history came from
 
