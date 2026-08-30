@@ -4,7 +4,7 @@
 
 Roedy Green's **Mini PAD Submitter** is a small Java application that has existed since the late 1990s. It was built to submit [PAD files](https://en.wikipedia.org/wiki/Portable_Application_Description) (Portable Application Description — the shareware-era standard for describing Windows and Mac applications to software directories) to multiple download sites at once.
 
-<img width="684" height="517" alt="Mini PAD submitter 26 3 Revived - community edition 2026" src="https://github.com/user-attachments/assets/b9ceab3c-bfa4-4fa1-aacd-b24a3f8a9559" />
+<img width="684" height="517" alt="Mini PAD submitter 26 3 Revived - community edition 2026" src="screenshot.png" />
 
 
 The final official release (26.3) dates from 2017.
@@ -25,15 +25,15 @@ This repository restores compatibility with today's web while preserving the ori
 
 ## Why this exists
 
-This project started almost by accident. 
+This project started almost by accident.
 
-I was doing distribution work for [RiverScript](https://riverscript.com) — my app that can record and transcribe system audio on Windows and Mac — and went looking for old-school desktop software directories to list it in. 
+I was doing distribution work for [RiverScript](https://riverscript.com) — my app that can record and transcribe system audio on Windows and Mac — and went looking for old-school desktop software directories to list it in.
 
-That ecosystem (Softpedia, FileHorse, and many others) has existed since the 2000s and used to revolve around PAD files, which were typically submitted in bulk using tools like this one. 
+That ecosystem (Softpedia, FileHorse, and many others) has existed since the 2000s and used to revolve around PAD files, which were typically submitted in bulk using tools like this one.
 
-I found a copy of Roedy Green's Mini PAD Submitter sitting around and figured I'd try it instead of submitting to each directory by hand. 
+I found a copy of Roedy Green's Mini PAD Submitter sitting around and figured I'd try it instead of submitting to each directory by hand.
 
-It almost worked. It refused to accept our own site's PAD URL at all — and not just ours: it rejected any modern `https://` link, full stop. 
+It almost worked. It refused to accept our own site's PAD URL at all — and not just ours: it rejected any modern `https://` link, full stop.
 
 What initially looked like a simple validation bug turned out to be three separate compatibility issues with the modern web. The goal wasn't to modernize the application or rewrite it—only to restore the functionality it originally had, in a world where HTTPS is now the default.
 
@@ -45,16 +45,12 @@ Three separate bugs, all versions of the same root cause: **this code was writte
 
 2. **Even with a bare domain, it only ever built a plain `http://` URL**, and `HttpURLConnection` in Java does not automatically follow a redirect that changes protocol (http → https). Since basically everything is HTTPS-with-a-redirect now (in our case, courtesy of Cloudflare), the tool would fetch the _redirect stub_ instead of the real page and reject it for being too short.
 
-3. **The real one:** a static initializer in `Http.java` unconditionally ran `System.setProperty("jsse.enableSNIExtension", "false")` — disabling [SNI](https://en.wikipedia.org/wiki/Server_Name_Indication) for the entire JVM. This was presumably a workaround for some old server in 2014 that choked on it. Today, virtually every site sits behind a CDN (Cloudflare, etc.) that relies on SNI to know _which_ certificate to present on a shared IP. With SNI off, every single HTTPS handshake to a modern site fails with `SSLHandshakeException: Received fatal alert: handshake_failure`. This is what actually blocked things — the first two bugs were just cosmetic on top of this one.
+3. **The core issue** a static initializer in `Http.java` unconditionally ran `System.setProperty("jsse.enableSNIExtension", "false")` — disabling [SNI](https://en.wikipedia.org/wiki/Server_Name_Indication) for the entire JVM. This was presumably a workaround for some old server in 2014 that choked on it. Today, virtually every site sits behind a CDN (Cloudflare, etc.) that relies on SNI to know _which_ certificate to present on a shared IP. With SNI off, every single HTTPS handshake to a modern site fails with `SSLHandshakeException: Received fatal alert: handshake_failure`. This is what actually blocked things — the first two bugs were just cosmetic on top of this one.
 
 ## The fix
 
-- `Submitter.java`: accept `https://` as a valid prefix in both the auto-correct and the validation check (`patches/Submitter.java.diff`).
-- `Http.java`: stop force-disabling SNI, and manually follow cross-protocol redirects (JDK won't do it for you) by re-opening a connection to the `Location` header when the response is a 301/302/303/307/308 (`patches/Http.java.diff`).
-
-With those three changes, the tool can fetch and validate a PAD file hosted on any normal modern HTTPS site again.
-
-`dist/submitter-patched.jar` is the rebuilt, runnable jar (`java -jar submitter-patched.jar`). `src/` has the patched files in full plus `Get.java`, which carries no functional changes (it's included because `Submitter` depends on it) — for anyone who wants to rebuild from scratch you'll also need the rest of Roedy Green's `com.mindprod` packages (`common18`, `entities`, `fastcat`, etc.) on the classpath, available from his original distribution.
+- `Submitter.java`: accept `https://` as a valid prefix in both the auto-correct and the validation check
+- `Http.java`: stop force-disabling SNI, and manually follow cross-protocol redirects (JDK won't do it for you) by re-opening a connection to the `Location` header when the response is a 301/302/303/307/308
 
 ## What this doesn't fix
 
@@ -123,4 +119,4 @@ Roedy Green also wrote [How To Write Unmaintainable Code](https://github.com/dro
 
 ## License
 
-Roedy Green's original code is distributed under his own terms — see [LICENSE.md](LICENSE.md). The short version: free to use and modify, for any purpose except military use, and that restriction carries forward to anything built on top of it. This repository, and the patch it contains, follows the same terms.
+Roedy Green's original code is distributed under his own terms — see [LICENSE.md](LICENSE.md). The short version: free to use and modify, for any purpose except military use, and that restriction carries forward to anything built on top of it. This repository follows the same terms.
