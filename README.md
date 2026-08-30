@@ -99,11 +99,11 @@ java -jar app/build/libs/app.jar
 
 ## Where the git history came from
 
-The commit log goes back to 1998. Roedy never used git for this project — he kept a changelog by hand at the top of each source file, one line per change with a version number, a date, and a note about what he added or removed.
+The commit log goes back to 1998. Roedy used SVN for source control and embedded a changelog at the top of each source file, with comments describing each change along with a version number and date.
 
 [cliserkad](https://github.com/cliserkad) turned those comment lines into commits ([#1](https://github.com/lexvalo/mini-pad-submitter-revived/pull/1)), one per changelog entry, each with its original date and message. The commits are authored as Roedy Green, since the dates and the wording are his; the committer field records cliserkad, who did the reconstruction. The changelog blocks are gone from the file headers now, replaced by a single `Version:` line that moves through the history to match.
 
-The granularity is his changelog's — one commit per release note, not per actual change. Plain `git log` also shows the dates jumping around, since the reconstructed commits sit on top of the 2026 ones. Sorting by author date puts it in order:
+Plain `git log` misrepresents the original changelog, since the reconstructed commits were added after the 2026 patches. Sorting by author date puts it in order:
 
 ```sh
 git log --pretty=format:"%ad %h by %an, %s" --date=iso | sort
@@ -111,7 +111,7 @@ git log --pretty=format:"%ad %h by %an, %s" --date=iso | sort
 
 It also makes for a good [Gource](https://gource.io/) run, with `--author-time`.
 
-A real history may still exist somewhere — Roedy's site has an SVN link on it, though a straight `git svn clone` against that URL didn't get anywhere.
+If you have a copy of the original source control repository, please open a pull request or issue so it can be integrated. The original SVN host, [wush.net](https://wush.net/wn/home), is no longer operating.
 
 ## About the original author
 
